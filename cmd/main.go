@@ -2,6 +2,13 @@ package main
 
 import (
 	"auth/internal/config"
+	"auth/internal/handlers"
+	"auth/internal/lib/logger/handlers/slogpretty"
+	"auth/internal/lib/logger/sl"
+	"auth/internal/repo"
+	"auth/internal/repo/postgres"
+	"auth/internal/server"
+	"auth/internal/service"
 	"log/slog"
 	"os"
 )
@@ -18,6 +25,20 @@ func main() {
 	log := setupLogger(cfg.Env)
 
 	log.Info("starting auth service")
+
+	db, err := postgres.NewPostgresDB(cfg.Database)
+	if err != nil {
+		log.Error("failed to connect to database", sl.Err(err))
+		os.Exit(1)
+	}
+	repo := repo.NewRepository(db)
+	service := service.NewService(repo)
+	handlers := handlers.NewHandler(service)
+	srv := server.New(&cfg.HTTPServer, handlers.InitRoutes())
+	if err := srv.Run(); err != nil {
+		log.Error("failed to start server", sl.Err(err))
+		os.Exit(1)
+	}
 }
 
 func setupLogger(env string) *slog.Logger {
@@ -25,17 +46,23 @@ func setupLogger(env string) *slog.Logger {
 
 	switch env {
 	case envLocal:
-		log = slog.New(
-			slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}),
-		)
+		log = setupPrettySlog()
 	case envDev:
-		log = slog.New(
-			slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}),
-		)
+		log = setupPrettySlog()
+
 	case envProd:
-		log = slog.New(
-			slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelInfo}),
-		)
+		log = setupPrettySlog()
 	}
 	return log
+}
+func setupPrettySlog() *slog.Logger {
+	opts := slogpretty.PrettyHandlerOptions{
+		SlogOpts: &slog.HandlerOptions{
+			Level: slog.LevelDebug,
+		},
+	}
+
+	handler := opts.NewPrettyHandler(os.Stdout)
+
+	return slog.New(handler)
 }

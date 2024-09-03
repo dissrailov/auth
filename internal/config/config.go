@@ -22,7 +22,7 @@ type HTTPServer struct {
 
 type Database struct {
 	Host     string `yaml:"host"`
-	Port     int    `yaml:"port"`
+	Port     string `yaml:"port"`
 	Username string `yaml:"username"`
 	Password string `yaml:"password"`
 	DBname   string `yaml:"dbname"`
