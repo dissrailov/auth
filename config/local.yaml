@@ -10,4 +10,6 @@ database:
   password: 1234567
   dbname: auth
 jwt:
+  access_token_ttl: 15m
+  refresh_token_ttl: 30m
   secret_key: "kqaU4SzYnwvr2qkriHO7aUUnh1KRsfxmcsobqUaHr1U="
