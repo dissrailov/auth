@@ -54,7 +54,7 @@ func (s *service) saveRefreshToken(guid string, refreshToken string) error {
 	if err != nil {
 		return err
 	}
-	err = s.repo.SaveRefreshToken(guid, string(hashedToken))
+	err = s.repo.InsertRefreshToken(guid, string(hashedToken))
 	if err != nil {
 		return err
 	}
