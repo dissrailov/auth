@@ -7,8 +7,7 @@ func (h *HandlerApp) InitRoutes() *gin.Engine {
 
 	auth := router.Group("/auth")
 	{
-		auth.POST("/token")
-		auth.POST("/refresh")
+		auth.GET("/token", h.GetAuthToken)
 	}
 	return router
 }

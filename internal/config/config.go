@@ -29,8 +29,7 @@ type Database struct {
 }
 
 type JWT struct {
-	AccessTokenTTL  time.Duration `yaml:"access_token_ttl" env-default:"24h"`
-	RefreshTokenTTL time.Duration `yaml:"refresh_token_ttl" env-default:"24h"`
+	SecretKey string `yaml:"secret_key" env-default:"secret"`
 }
 
 func MustLoad() *Config {

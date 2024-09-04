@@ -33,7 +33,7 @@ func main() {
 	}
 	repo := repo.NewRepository(db)
 	service := service.NewService(repo)
-	handlers := handlers.NewHandler(service)
+	handlers := handlers.NewHandler(service, cfg)
 	srv := server.New(&cfg.HTTPServer, handlers.InitRoutes())
 	if err := srv.Run(); err != nil {
 		log.Error("failed to start server", sl.Err(err))
