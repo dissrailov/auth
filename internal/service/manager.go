@@ -15,6 +15,8 @@ type ServiceI interface {
 
 type Authenticate interface {
 	ForgeAuthPair(guid string, ip string, cfg config.Config) (*models.TokenPair, error)
+	VerifyRefreshToken(refreshToken, guid, currentIP string) (string, bool, error)
+	DeleteRefreshToken(guid string) error
 }
 
 func NewService(repo repo.RepoI) ServiceI {

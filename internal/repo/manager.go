@@ -9,7 +9,9 @@ type RepoI interface {
 	AuthenticationI
 }
 type AuthenticationI interface {
-	InsertRefreshToken(guid, hashToken string) error
+	InsertRefreshToken(guid, hashToken, ip string) error
+	GetRefreshToken(guid string) (string, string, error)
+	DeleteRefreshToken(guid string) error
 }
 
 func NewRepository(db *sqlx.DB) RepoI {
