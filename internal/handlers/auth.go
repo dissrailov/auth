@@ -6,7 +6,7 @@ import (
 	"log"
 )
 
-func (h *HandlerApp) GetAuthToken(c *gin.Context) {
+func (h *HandlerApp) GetAccessToken(c *gin.Context) {
 	guidStr := c.Query("guid")
 	if guidStr == "" {
 		c.JSON(400, gin.H{"error": "GUID is empty"})
@@ -28,4 +28,7 @@ func (h *HandlerApp) GetAuthToken(c *gin.Context) {
 		"access_token":  tokenPair.AccessToken,
 		"refresh_token": tokenPair.RefreshToken,
 	})
+}
+
+func (h *HandlerApp) RefreshToken(c *gin.Context) {
 }
