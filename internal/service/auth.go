@@ -66,7 +66,10 @@ func (s *service) VerifyRefreshToken(refreshToken, guid, currentIP string) (stri
 		return "", false, err
 	}
 	if ipDB != currentIP {
-
+		err = s.sendEmail("test@mail.ru", ipDB, currentIP)
+		if err != nil {
+			return "", false, err
+		}
 	}
 	err = bcrypt.CompareHashAndPassword([]byte(hashedToken), []byte(refreshToken))
 	if err != nil {
