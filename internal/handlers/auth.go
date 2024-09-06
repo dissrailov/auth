@@ -7,11 +7,6 @@ import (
 	"github.com/google/uuid"
 )
 
-func (h *HandlerApp) Hello(c *gin.Context) {
-	fmt.Println("Hello World")
-	c.JSON(200, gin.H{"DAMIR": "LEZHAT'"})
-	return
-}
 func (h *HandlerApp) GetAccessToken(c *gin.Context) {
 	guidStr := c.Query("guid")
 	if guidStr == "" {
@@ -50,6 +45,7 @@ func (h *HandlerApp) RefreshToken(c *gin.Context) {
 	}
 	_, valid, err := h.service.VerifyRefreshToken(refreshToken, guid, c.ClientIP())
 	if err != nil || !valid {
+		fmt.Println(err)
 		c.JSON(400, gin.H{"error": "Refresh token is invalid or expired"})
 		return
 	}
