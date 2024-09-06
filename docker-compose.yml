@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: app
+    build: ./
+    command: ./main
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: 1234567
+      DB_NAME: auth
+      APP_PORT: 8080
+      CONFIG_PATH: /config/local.yaml
+    volumes:
+      - ./config/local.yaml:/config/local.yaml
+    networks:
+      - main
+
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    restart: always
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d auth"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+    environment:
+      POSTGRES_DB: auth
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234567
+    ports:
+      - "5436:5432"
+    networks:
+      - main
+
+networks:
+  main:
+    driver: bridge

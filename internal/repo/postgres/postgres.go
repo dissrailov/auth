@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
+	"log"
 )
 
 type Storage struct {
@@ -12,14 +13,19 @@ type Storage struct {
 }
 
 func NewPostgresDB(cfg config.Database) (*sqlx.DB, error) {
-	db, err := sqlx.Open("postgres", fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable",
-		cfg.Host, cfg.Port, cfg.Username, cfg.DBname, cfg.Password))
+	log.Println(cfg)
+	connStr := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable",
+		cfg.Host, cfg.Port, cfg.Username, cfg.DBname, cfg.Password)
+
+	db, err := sqlx.Open("postgres", connStr)
 	if err != nil {
 		return nil, err
 	}
+
 	err = db.Ping()
 	if err != nil {
 		return nil, err
 	}
+
 	return db, nil
 }

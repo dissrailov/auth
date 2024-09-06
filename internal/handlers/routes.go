@@ -7,6 +7,7 @@ func (h *HandlerApp) InitRoutes() *gin.Engine {
 
 	auth := router.Group("/auth")
 	{
+		auth.GET("", h.Hello)
 		auth.GET("/access", h.GetAccessToken)
 		auth.POST("refresh", h.RefreshToken)
 	}

@@ -9,6 +9,7 @@ import (
 	"auth/internal/repo/postgres"
 	"auth/internal/server"
 	"auth/internal/service"
+	"fmt"
 	"log/slog"
 	"os"
 )
@@ -25,12 +26,13 @@ func main() {
 	log := setupLogger(cfg.Env)
 
 	log.Info("starting auth service")
-
+	fmt.Println(cfg.Database)
 	db, err := postgres.NewPostgresDB(cfg.Database)
 	if err != nil {
 		log.Error("failed to connect to database", sl.Err(err))
 		os.Exit(1)
 	}
+	fmt.Println(cfg.HTTPServer)
 	repo := repo.NewRepository(db)
 	service := service.NewService(repo)
 	handlers := handlers.NewHandler(service, cfg)

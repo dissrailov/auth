@@ -2,10 +2,16 @@ package handlers
 
 import (
 	"auth/internal/pkg/cookie"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
 
+func (h *HandlerApp) Hello(c *gin.Context) {
+	fmt.Println("Hello World")
+	c.JSON(200, gin.H{"DAMIR": "LEZHAT'"})
+	return
+}
 func (h *HandlerApp) GetAccessToken(c *gin.Context) {
 	guidStr := c.Query("guid")
 	if guidStr == "" {
